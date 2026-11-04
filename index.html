@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="it">
+<head data-k>
+<meta charset="utf-8" data-k>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" data-k>
+<meta name="apple-mobile-web-app-capable" content="yes" data-k>
+<meta name="mobile-web-app-capable" content="yes" data-k>
+<meta name="apple-mobile-web-app-title" content="Lezioni" data-k>
+<meta name="theme-color" content="#f3f5f2" data-k>
+<link rel="apple-touch-icon" href="apple-touch-icon.png" data-k>
+<script src="https://accounts.google.com/gsi/client" async defer data-k></script>
+<title data-k>Le mie lezioni · CIOFS Novara</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" data-k>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" data-k>
+<style data-k>
+:root{
+  --bg:#f3f5f2; --card:#ffffff; --ink:#263028; --muted:#6b756c; --line:#e2e8e1;
+  --accent:#8fa290; --accent-deep:#5d715f; --accent-ink:#475b4a; --accent-soft:#e6ede6;
+  --comp:#937a8d; --comp-soft:#f1e8ee; --comp-light:#d3c1ce;
+  --grey-soft:#edf0ec;
+  --radius:16px; --shadow:0 1px 2px rgba(30,45,32,.05),0 4px 14px rgba(30,45,32,.07);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--ink);font-family:'DM Sans',system-ui,sans-serif;font-size:15px;line-height:1.45}
+.wrap{max-width:760px;margin:0 auto;padding:calc(22px + env(safe-area-inset-top)) 18px 110px}
+header.top{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:18px}
+h1{font-family:'Fraunces',serif;font-weight:600;font-size:27px;letter-spacing:-.01em;line-height:1.1}
+h1 small{display:block;font-family:'DM Sans';font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-deep);margin-bottom:6px}
+h2{font-family:'Fraunces',serif;font-weight:600;font-size:20px;margin:26px 0 12px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.today-chip{font-size:12.5px;color:var(--muted);text-align:right;white-space:nowrap}
+nav.tabs{position:fixed;left:0;right:0;bottom:0;background:rgba(255,255,255,.96);backdrop-filter:blur(8px);border-top:1px solid var(--line);display:flex;justify-content:center;z-index:10;padding-bottom:env(safe-area-inset-bottom)}
+nav.tabs .in{display:flex;max-width:760px;width:100%}
+nav.tabs a{flex:1;text-align:center;padding:10px 4px 11px;font-size:12px;font-weight:600;color:var(--muted);text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:3px}
+nav.tabs a svg{width:21px;height:21px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+nav.tabs a.on{color:var(--accent-deep)}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:16px 18px}
+.hero{background:linear-gradient(135deg,#7f937f,#55695a);color:#fff;border-radius:20px;padding:20px 20px 18px;box-shadow:var(--shadow)}
+.hero .lbl{font-size:11.5px;letter-spacing:.12em;text-transform:uppercase;opacity:.85;font-weight:700;display:flex;justify-content:space-between;align-items:center}
+.hero .when{font-family:'Fraunces',serif;font-size:24px;margin:6px 0 2px}
+.hero .what{font-size:15px;opacity:.95}
+.hero .pills{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.hero .pill{background:rgba(255,255,255,.18);border-radius:999px;padding:5px 12px;font-size:13px;font-weight:600}
+.hero .edit-btn{color:#fff;border-color:rgba(255,255,255,.45);background:rgba(255,255,255,.1)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.stat{background:var(--card);border-radius:14px;padding:12px 14px;box-shadow:var(--shadow)}
+.stat .n{font-family:'Fraunces',serif;font-size:26px;font-weight:600;line-height:1;color:var(--accent-ink)}
+.stat .t{font-size:12px;color:var(--muted);margin-top:5px}
+.lesson{display:grid;grid-template-columns:78px 1fr auto;gap:12px;align-items:center;padding:13px 0;border-top:1px solid var(--line)}
+.lesson:first-child,.lesson.first{border-top:0}
+.lesson .time{font-weight:700;font-size:14.5px}
+.lesson .time span{display:block;font-weight:500;color:var(--muted);font-size:12px}
+.lesson .cls{font-weight:700;font-size:16px}
+.lesson .room,.room{font-size:13px;color:var(--muted);margin-top:2px}
+.room b{color:var(--ink);font-weight:600}
+.room .na{color:var(--comp);font-weight:600}
+.lnote{font-size:12.5px;color:var(--accent-ink);margin-top:3px;font-style:italic}
+.tag-mod{display:inline-block;font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--comp);background:var(--comp-soft);border-radius:6px;padding:1px 6px;margin-left:6px;vertical-align:2px}
+.right{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.badge{display:inline-block;border-radius:999px;font-size:11.5px;font-weight:700;padding:3px 9px;white-space:nowrap}
+.b-done{background:var(--accent-soft);color:var(--accent-ink)}
+.b-plan{background:var(--comp-soft);color:var(--comp)}
+.b-off{background:var(--grey-soft);color:var(--muted);text-decoration:line-through}
+.b-today{background:var(--accent-deep);color:#fff}
+.lesson.off .cls,.lesson.off .time,.row-l.off .dt,.row-l.off b{color:var(--muted);text-decoration:line-through}
+.st-btn{border:0;background:none;cursor:pointer;padding:0;font:inherit}
+.edit-btn{border:1px solid var(--line);background:var(--card);color:var(--accent-ink);border-radius:999px;padding:4px 11px;font:inherit;font-size:12px;font-weight:700;cursor:pointer;white-space:nowrap}
+.add-btn{white-space:nowrap;border:0;background:var(--accent-deep);color:#fff;border-radius:999px;padding:7px 14px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;font-family:'DM Sans'}
+.editor{background:var(--accent-soft);border-radius:14px;padding:14px;margin:10px 0;color:var(--ink)}
+.editor .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.editor label{display:flex;flex-direction:column;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent-ink);gap:4px}
+.editor label.full{grid-column:1/-1}
+.editor input,.editor select{font:inherit;font-size:15px;text-transform:none;letter-spacing:0;font-weight:500;color:var(--ink);border:1px solid #cfd9ce;background:#fff;border-radius:10px;padding:9px 10px;width:100%}
+.editor .acts{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.editor .acts button{font:inherit;font-size:13px;font-weight:700;border-radius:999px;padding:8px 14px;cursor:pointer;border:1px solid transparent}
+.btn-save{background:var(--accent-deep);color:#fff}
+.btn-cancel{background:#fff;color:var(--ink);border-color:var(--line)!important}
+.btn-reset{background:#fff;color:var(--comp);border-color:var(--comp-light)!important}
+.btn-del{background:var(--comp);color:#fff}
+.err{color:var(--comp);font-size:12.5px;font-weight:600;margin-top:8px}
+.day{margin-bottom:12px}
+.day-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px}
+.day-h .d{font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--accent-deep)}
+.day-h .h{font-size:12.5px;color:var(--muted)}
+.day.empty .card{color:var(--muted);font-size:13.5px;padding:12px 18px}
+.day.istoday .card{outline:2px solid var(--accent)}
+.weeknav{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px}
+.weeknav button{border:1px solid var(--line);background:var(--card);border-radius:12px;width:42px;height:42px;font-size:18px;cursor:pointer;color:var(--ink)}
+.weeknav button:disabled{opacity:.35;cursor:default}
+.weeknav .mid{text-align:center}
+.weeknav .mid .r{font-family:'Fraunces',serif;font-size:19px;font-weight:600}
+.weeknav .mid .s{font-size:12.5px;color:var(--muted)}
+.note{font-size:12.5px;color:var(--ink);background:var(--comp-soft);border-radius:12px;padding:10px 13px;margin-bottom:12px}
+.filters{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px}
+.chip{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:6px 13px;font:inherit;font-size:13px;font-weight:600;cursor:pointer;color:var(--ink)}
+.chip.on{background:var(--accent-deep);color:#fff;border-color:var(--accent-deep)}
+.month-h{font-family:'Fraunces',serif;font-size:18px;font-weight:600;margin:20px 0 8px;display:flex;justify-content:space-between;align-items:baseline}
+.month-h span{font-family:'DM Sans';font-size:13px;color:var(--muted);font-weight:600}
+.row-l{display:grid;grid-template-columns:92px 1fr auto;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--line);font-size:14px}
+.row-l:first-child,.row-l.first{border-top:0}
+.row-l .dt{font-weight:700}
+.row-l .dt span{display:block;font-weight:500;color:var(--muted);font-size:12px}
+.total{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.total .big{font-family:'Fraunces',serif;font-size:44px;font-weight:600;line-height:1;color:var(--accent-ink)}
+.total .sub{font-size:13px;color:var(--muted)}
+.bar{height:10px;background:var(--grey-soft);border-radius:99px;overflow:hidden;display:flex;margin-top:12px}
+.bar i{display:block;height:100%}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--muted);margin-top:8px;flex-wrap:wrap}
+.legend b{display:inline-block;width:9px;height:9px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700;padding:8px 6px;border-bottom:1px solid var(--line)}
+td{padding:10px 6px;border-bottom:1px solid var(--line)}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+tr.tot td{font-weight:700;border-bottom:0}
+.mcard{margin-bottom:12px}
+.mcard .mh{display:flex;justify-content:space-between;align-items:baseline}
+.mcard .mh .m{font-family:'Fraunces',serif;font-size:19px;font-weight:600}
+.mcard .mh .v{font-family:'Fraunces',serif;font-size:24px;font-weight:600;color:var(--accent-ink)}
+.mcard .split{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.mcard .split span{background:var(--accent-soft);color:var(--accent-ink);border-radius:8px;padding:3px 9px;font-size:12.5px;font-weight:600}
+.extra{border-left:4px solid var(--comp);}
+.foot{font-size:12px;color:var(--muted);margin-top:22px;line-height:1.55}
+.hint{font-size:12.5px;color:var(--muted);margin:-4px 0 12px}
+.sync{font-size:11.5px;color:var(--muted);text-align:center;margin-top:18px}
+.mc-h{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.add-btn:disabled{opacity:.6;cursor:default}
+.report{margin-top:10px;border-top:1px solid var(--line);padding-top:10px}
+.rw{padding:8px 0;border-bottom:1px solid var(--line)}
+.rw-h{font-weight:700;font-size:14px;display:flex;justify-content:space-between}
+.rw-h span{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--comp)}
+.chg{font-size:13px;margin-top:5px;padding:6px 9px;border-radius:9px;line-height:1.4}
+.ch-a{background:var(--accent-soft);color:var(--accent-ink)}
+.ch-r{background:var(--comp-soft);color:var(--comp);text-decoration:line-through}
+.ch-m{background:var(--grey-soft);color:var(--ink)}
+.report .acts button{font:inherit;font-size:13px;font-weight:700;border-radius:999px;padding:8px 14px;cursor:pointer;border:1px solid transparent}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.brand h1 small{white-space:nowrap;letter-spacing:.08em}
+.today-chip{white-space:normal!important;max-width:90px}
+.brand .logo{width:46px;height:46px;flex:none}
+body.locked .wrap,body.locked nav.tabs{display:none}
+#login{display:none;min-height:100vh;align-items:center;justify-content:center;padding:24px}
+body.locked #login{display:flex}
+#login .box{background:#fff;border-radius:20px;box-shadow:var(--shadow);padding:26px 22px;width:100%;max-width:360px}
+#login h2{margin:12px 0 4px}
+#login label{display:block;font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent-ink);margin-top:14px}
+#login input[type=email],#login input[type=password]{font:inherit;font-size:16px;width:100%;border:1px solid #cfd9ce;border-radius:10px;padding:11px 12px;margin-top:5px}
+#login .rem{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted);margin-top:12px;text-transform:none;letter-spacing:0;font-weight:500}
+#login button{margin-top:18px;width:100%;border:0;background:var(--accent-deep);color:#fff;border-radius:999px;padding:12px;font:inherit;font-weight:700;font-size:15px;cursor:pointer}
+#login .err{min-height:18px}
+@media (min-width:700px){ .wrap{padding-top:34px} h1{font-size:32px} }
+</style>
+</head>
+<body data-k class="locked">
+<div class="wrap" data-k>
+  <header class="top">
+    <div class="brand">
+      <svg class="logo" viewBox="0 0 64 64" aria-hidden="true">
+        <rect x="6" y="8" width="52" height="38" rx="5" fill="#5d715f"/>
+        <rect x="10" y="12" width="44" height="30" rx="3" fill="#8fa290"/>
+        <path d="M16 21h16M16 27h22M16 33h12" stroke="#fff" stroke-width="2.6" stroke-linecap="round" opacity=".92"/>
+        <path d="M40 31.5l3 3 6-7" stroke="#f1e8ee" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="38" y="42.5" width="11" height="3.2" rx="1.6" fill="#f1e8ee"/>
+        <path d="M22 46l-5 12M42 46l5 12" stroke="#5d715f" stroke-width="3" stroke-linecap="round"/>
+      </svg>
+      <h1><small>CIOFS Novara · A.F. 2026-2027</small>Le mie lezioni</h1>
+    </div>
+    <div class="today-chip" id="todayChip"></div>
+  </header>
+  <main id="view"></main>
+  <div class="sync" id="sync"></div>
+</div>
+<div id="login" data-k><form class="box" id="lf" autocomplete="on">
+  <svg viewBox="0 0 64 64" width="52" height="52" aria-hidden="true"><rect x="6" y="8" width="52" height="38" rx="5" fill="#5d715f"/><rect x="10" y="12" width="44" height="30" rx="3" fill="#8fa290"/><path d="M16 21h16M16 27h22M16 33h12" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/><path d="M40 31.5l3 3 6-7" stroke="#f1e8ee" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 46l-5 12M42 46l5 12" stroke="#5d715f" stroke-width="3" stroke-linecap="round"/></svg>
+  <h2>Le mie lezioni</h2><div class="room">Accedi per vedere i tuoi orari.</div>
+  <label>Email<input type="email" id="lu" autocomplete="username" required></label>
+  <label>Password<input type="password" id="lp" autocomplete="current-password" required></label>
+  <label class="rem"><input type="checkbox" id="lr" checked> Ricordami su questo dispositivo</label>
+  <div class="err" id="le"></div>
+  <button type="submit" id="lb">Accedi</button></form></div>
+<script data-k>
+const ENC={"v": 1, "iter": 310000, "salt": "zH3KhNsygVKx37ZELH/2xQ==", "iv": "XWcDbXG6x7LkaRnd", "ct": "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"};
+(function(){
+  const u8=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0)), b64=a=>btoa(String.fromCharCode(...new Uint8Array(a)));
+  async function open(key){
+    const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:u8(ENC.iv)},key,u8(ENC.ct));
+    window.__DATA=JSON.parse(new TextDecoder().decode(pt));
+    document.body.classList.remove('locked');
+    const s=document.createElement('script');s.text=document.getElementById('appcode').textContent;document.body.appendChild(s);
+  }
+  async function derive(email,pw){
+    const base=await crypto.subtle.importKey('raw',new TextEncoder().encode(email.trim().toLowerCase()+'\n'+pw),'PBKDF2',false,['deriveKey']);
+    return crypto.subtle.deriveKey({name:'PBKDF2',salt:u8(ENC.salt),iterations:ENC.iter,hash:'SHA-256'},base,{name:'AES-GCM',length:256},true,['decrypt']);
+  }
+  (async()=>{try{const k=localStorage.getItem('ciofs_key');if(k){const key=await crypto.subtle.importKey('raw',u8(k),'AES-GCM',true,['decrypt']);await open(key);}}catch(e){try{localStorage.removeItem('ciofs_key')}catch(_){}}})();
+  document.getElementById('lf').addEventListener('submit',async ev=>{
+    ev.preventDefault();const le=document.getElementById('le'),lb=document.getElementById('lb');le.textContent='';lb.disabled=true;lb.textContent='Accesso…';
+    try{const key=await derive(document.getElementById('lu').value,document.getElementById('lp').value);await open(key);
+      if(document.getElementById('lr').checked){try{localStorage.setItem('ciofs_key',b64(await crypto.subtle.exportKey('raw',key)))}catch(_){}}
+    }catch(e){le.textContent='Email o password non corretti.';lb.disabled=false;lb.textContent='Accedi'}
+  });
+  document.addEventListener('click',e=>{if(e.target.closest('[data-logout]')){try{localStorage.removeItem('ciofs_key')}catch(_){}location.reload()}});
+})();
+</script>
+<nav class="tabs" data-k><div class="in">
+  <a href="#oggi" data-v="oggi"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>Oggi</a>
+  <a href="#settimana" data-v="settimana"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Settimana</a>
+  <a href="#calendario" data-v="calendario"><svg viewBox="0 0 24 24"><path d="M5 6h14M5 12h14M5 18h9"/></svg>Elenco</a>
+  <a href="#riepilogo" data-v="riepilogo"><svg viewBox="0 0 24 24"><path d="M5 20V11M12 20V5M19 20v-6"/></svg>Riepilogo</a>
+</div></nav>
+
+<!-- Stato salvato: modifiche, lezioni aggiunte, annullate, ore extra -->
+
+
+<script type="text/x-app" id="appcode" data-k>
+/* ====== DATI estratti dai PDF orari CIOFS (solo docente SANNA) ====== */
+const LESSONS=window.__DATA.lessons;
+const BASE_WEEKS=[
+ {n:"08",mon:"2026-10-19"},{n:"09",mon:"2026-10-26"},{n:"10",mon:"2026-11-02"},{n:"11",mon:"2026-11-09"},
+ {n:"12",mon:"2026-11-16"},{n:"13",mon:"2026-11-23"},{n:"14",mon:"2026-11-30"},
+ {n:"15",mon:"2026-12-07",note:"Lunedì 7/12 lezioni sospese, martedì 8/12 festa. Nel PDF non risultano tue ore in questa settimana."},
+ {n:"16",mon:"2026-12-14",note:"Nel PDF non risultano tue ore in questa settimana."}
+];
+const DAYN=['Domenica','Lunedì','Martedì','Mercoledì','Giovedì','Venerdì','Sabato'];
+const MONN=['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
+
+/* Sorgente della pagina, catturata prima di ogni render (serve per salvare lo stato) */
+const SRC_DOC=document.documentElement.cloneNode(true);
+/* Estrazione lezioni SANNA da una pagina orario CIOFS (pdf.js). Usabile in browser e in node. */
+async function ciofsExtract(page, TEACHER){
+  TEACHER=TEACHER||'SANNA';
+  const vp=page.getViewport({scale:1});
+  const H=vp.height;
+  const tc=await page.getTextContent();
+  // 1) caratteri con posizione (top/bottom in coordinate "dall'alto")
+  const chars=[];
+  for(const it of tc.items){
+    const s=it.str; if(!s||!s.trim()) continue;
+    const tr=it.transform; const fh=Math.hypot(tr[2],tr[3])||it.height||4;
+    const x0=tr[4], base=tr[5], w=it.width||0;
+    const top=H-base-fh*0.8, bottom=H-base+fh*0.2;
+    const n=s.length;
+    for(let i=0;i<n;i++){
+      const c=s[i]; if(c===' ') continue;
+      chars.push({t:c,x0:x0+w*i/n,x1:x0+w*(i+1)/n,top,bottom});
+    }
+  }
+  // 2) righe -> parole
+  const lines=[];
+  for(const c of chars){
+    let L=lines.find(l=>Math.abs(l.k-c.top)<0.8);
+    if(!L){L={k:c.top,cs:[]};lines.push(L)}
+    L.cs.push(c);
+  }
+  const ws=[];
+  for(const L of lines){
+    L.cs.sort((a,b)=>a.x0-b.x0);
+    let cur=null;
+    for(const c of L.cs){
+      if(cur && c.x0-cur.x1<1.2 && c.x0>=cur.x1-0.5){cur.text+=c.t;cur.x1=c.x1;cur.bottom=Math.max(cur.bottom,c.bottom)}
+      else{cur={text:c.t,x0:c.x0,x1:c.x1,top:c.top,bottom:c.bottom};ws.push(cur)}
+    }
+  }
+  const txt=ws.map(w=>w.text).join(' ');
+  // 3) intestazione: date e anno formativo
+  let range=null;
+  const all=ws.slice().sort((a,b)=>a.top-b.top||a.x0-b.x0);
+  for(let i=0;i<all.length;i++){
+    if(all[i].text==='DAL'){
+      const a=all[i+1]&&all[i+1].text, b=all[i+3]&&all[i+3].text;
+      const ma=/^(\d{1,2})\/(\d{1,2})$/.exec(a||''), mb=/^(\d{1,2})\/(\d{1,2})$/.exec(b||'');
+      if(ma){range={d1:+ma[1],m1:+ma[2],d2:mb?+mb[1]:null,m2:mb?+mb[2]:null};break}
+    }
+  }
+  const af=/A\.F\.\s*(\d{4})-(\d{4})/.exec(txt) || /A\.F\.(\d{4})-(\d{4})/.exec(txt.replace(/\s/g,''));
+  // 4) colonne
+  const hb=ws.filter(w=>w.text==='1B').sort((a,b)=>a.top-b.top)[0];
+  if(!hb) throw new Error('intestazione classi non trovata');
+  const Y=hb.top;
+  const classes=ws.filter(w=>Math.abs(w.top-Y)<3 && (/^\d[A-Z]$/.test(w.text)||/^[A-Z]{2,4}$/.test(w.text)) && w.x0>40).sort((a,b)=>a.x0-b.x0);
+  const strs=ws.filter(w=>w.top>Y+8&&w.top<Y+32&&w.text==='STR').sort((a,b)=>a.x0-b.x0);
+  const ambs=ws.filter(w=>w.top>Y+8&&w.top<Y+32&&w.text==='AMB').sort((a,b)=>a.x0-b.x0);
+  const X0=Math.min(...classes.map(c=>c.x0))-12;
+  const cols=[];let prev=X0;
+  for(let i=0;i<Math.min(classes.length,strs.length,ambs.length);i++){
+    const s=strs[i],a=ambs[i];
+    cols.push({cls:classes[i].text,t0:prev,t1:s.x0-0.5,s0:s.x0-0.5,s1:a.x0-2.5,a0:a.x0-2.5,a1:a.x1+3});
+    prev=a.x1+3;
+  }
+  // 5) righe orarie
+  const hl=[];
+  for(const w of ws){
+    if(w.x0<X0){
+      const m=/(\d{1,2})-(\d{1,2})$/.exec(w.text);
+      if(m && +m[2]===+m[1]+1 && +m[1]>=8 && +m[1]<=17) hl.push([+m[1]-8,(w.top+w.bottom)/2]);
+    }
+  }
+  hl.sort((a,b)=>a[1]-b[1]);
+  const days=[];let cur=null;
+  for(const [i,y] of hl){ if(i===0){cur=[];days.push(cur)} if(cur) cur.push([i,y]) }
+  const rows=[];
+  days.forEach((pts,d)=>{
+    let a,b;
+    if(pts.length>1){
+      const n=pts.length,mx=pts.reduce((s,p)=>s+p[0],0)/n,my=pts.reduce((s,p)=>s+p[1],0)/n;
+      let num=0,den=0;for(const p of pts){num+=(p[0]-mx)*(p[1]-my);den+=(p[0]-mx)**2}
+      b=den?num/den:9.5;a=my-b*mx;
+    }else{b=9.5;a=pts[0][1]}
+    for(let i=0;i<10;i++) rows.push({day:d,h:8+i,y:a+b*i});
+  });
+  function rowOf(w){const y=(w.top+w.bottom)/2;let best=null,bd=1e9;for(const r of rows){const d=Math.abs(r.y-y);if(d<bd){bd=d;best=r}}return bd<6?best:null}
+  const grid=new Map();
+  for(const w of ws){
+    if(w.top<Y+22||w.x0<X0) continue;
+    const r=rowOf(w); if(!r) continue;
+    for(const c of cols){
+      const k=r.day+'|'+r.h+'|'+c.cls;
+      let zone=null;
+      if(w.x0>=c.t0&&w.x0<c.t1) zone='t'; else if(w.x0>=c.s0&&w.x0<c.a0) zone='s'; else if(w.x0>=c.a0&&w.x0<=c.a1) zone='a';
+      if(zone){ if(!grid.has(k))grid.set(k,{t:[],s:[],a:[]}); grid.get(k)[zone].push(w.text); break }
+    }
+  }
+  // 6) lezioni del docente
+  const out=[];
+  for(let d=0;d<days.length&&d<5;d++){
+    for(const c of cols){
+      let room=null,curL=null;
+      for(let h=8;h<18;h++){
+        const cell=grid.get(d+'|'+h+'|'+c.cls)||{t:[],s:[],a:[]};
+        if(cell.a.length) room=cell.a.join(' ');
+        if(cell.t.some(x=>x.includes(TEACHER))){
+          if(curL&&curL.end===h){curL.end=h+1;if(room)curL.rooms.add(room)}
+          else{curL={day:d,start:h,end:h+1,cls:c.cls,rooms:new Set(room?[room]:[])};out.push(curL)}
+        } else curL=null;
+      }
+    }
+  }
+  return {range,af:af?[+af[1],+af[2]]:null,classes:cols.map(c=>c.cls),
+    lessons:out.map(l=>({day:l.day,start:l.start,end:l.end,cls:l.cls,room:l.rooms.size?[...l.rooms].sort().join(' / '):null}))};
+}
+/* Estrae gli allegati da un messaggio Gmail in formato RAW (base64url di un RFC822) */
+function b64ToBytes(s){
+  s=s.replace(/-/g,'+').replace(/_/g,'/').replace(/[^A-Za-z0-9+/=]/g,'');
+  while(s.length%4) s+='=';
+  const bin=atob(s); const u=new Uint8Array(bin.length);
+  for(let i=0;i<bin.length;i++) u[i]=bin.charCodeAt(i);
+  return u;
+}
+function bytesToLatin1(u){let s='';const C=0x8000;for(let i=0;i<u.length;i+=C)s+=String.fromCharCode.apply(null,u.subarray(i,i+C));return s}
+function decodeWords(s){
+  return s.replace(/=\?([^?]+)\?([BbQq])\?([^?]*)\?=/g,(m,cs,enc,txt)=>{
+    try{
+      let bytes;
+      if(enc.toUpperCase()==='B') bytes=b64ToBytes(txt);
+      else{const t=txt.replace(/_/g,' ').replace(/=([0-9A-Fa-f]{2})/g,(x,h)=>String.fromCharCode(parseInt(h,16)));bytes=Uint8Array.from(t,c=>c.charCodeAt(0))}
+      return new TextDecoder(cs.toLowerCase()).decode(bytes);
+    }catch(e){return txt}
+  }).replace(/\?=\s+=\?/g,'?==?');
+}
+function parseHeaders(block){
+  const h={};
+  block.replace(/\r\n[ \t]+/g,' ').replace(/\n[ \t]+/g,' ').split(/\r?\n/).forEach(line=>{
+    const i=line.indexOf(':'); if(i>0){const k=line.slice(0,i).trim().toLowerCase(); h[k]=(h[k]?h[k]+'; ':'')+line.slice(i+1).trim()}
+  });
+  return h;
+}
+function param(hv,name){
+  if(!hv) return null;
+  // RFC2231 filename*=UTF-8''... (anche spezzato in filename*0*=)
+  const parts=[];const re=new RegExp(name+'\\*(\\d+)?\\*?=("?)([^";]*)\\2','gi');let m;
+  while((m=re.exec(hv))){parts.push({i:+(m[1]||0),v:m[3]})}
+  if(parts.length){
+    parts.sort((a,b)=>a.i-b.i);let v=parts.map(p=>p.v).join('');
+    const mm=/^([^']*)'[^']*'(.*)$/.exec(v); if(mm) v=mm[2];
+    try{return decodeURIComponent(v)}catch(e){return v}
+  }
+  const m2=new RegExp('(?:^|;)\\s*'+name+'=("([^"]*)"|[^;]*)','i').exec(hv);
+  if(!m2) return null;
+  return decodeWords((m2[2]!=null?m2[2]:m2[1]).trim());
+}
+function walkMime(latin, out){
+  const sep=latin.search(/\r?\n\r?\n/);
+  const head=sep<0?latin:latin.slice(0,sep);
+  const body=sep<0?'':latin.slice(sep).replace(/^\r?\n\r?\n/,'');
+  const h=parseHeaders(head);
+  const ct=h['content-type']||'text/plain';
+  if(/^multipart\//i.test(ct)){
+    const b=param(ct,'boundary'); if(!b) return;
+    const pieces=body.split('--'+b);
+    for(let i=1;i<pieces.length;i++){
+      let p=pieces[i]; if(p.startsWith('--')) break;
+      p=p.replace(/^\r?\n/,'');
+      walkMime(p,out);
+    }
+    return;
+  }
+  if(/^message\/rfc822/i.test(ct)){walkMime(body,out);return}
+  const name=param(h['content-disposition'],'filename')||param(ct,'name');
+  if(name){
+    const enc=(h['content-transfer-encoding']||'').toLowerCase();
+    let bytes;
+    if(enc==='base64') bytes=b64ToBytes(body);
+    else bytes=Uint8Array.from(body,c=>c.charCodeAt(0)&255);
+    out.push({filename:name,mime:ct.split(';')[0].trim().toLowerCase(),bytes});
+  }
+}
+function rawToAttachments(raw){
+  const latin=bytesToLatin1(b64ToBytes(raw));
+  const out=[];walkMime(latin,out);return out;
+}
+
+
+let STATE={extraHours:30,extraNote:"",overrides:{},added:[],off:{},pdfWeeks:{},seenMsgs:[],lastCheck:0,lastUpdate:null,calEvents:{}};
+try{Object.assign(STATE,window.__DATA.state||{})}catch(e){}
+/* fallback locale se il salvataggio nell'app non è disponibile */
+let LOCAL_ONLY=false;
+try{const ls=JSON.parse(localStorage.getItem('ciofs_state_v2')||'null');if(ls&&ls.savedAt>(STATE.savedAt||0))Object.assign(STATE,ls)}catch(e){}
+
+const pad=n=>String(n).padStart(2,'0');
+function parseD(s){const[y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d)}
+function iso(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
+function addDays(s,k){const d=parseD(s);d.setDate(d.getDate()+k);return iso(d)}
+function fmtShort(s){const d=parseD(s);return d.getDate()+'/'+(d.getMonth()+1)}
+function fmtLong(s){const d=parseD(s);return DAYN[d.getDay()]+' '+d.getDate()+' '+MONN[d.getMonth()]}
+function fmtT(h){const H=Math.floor(h),M=Math.round((h-H)*60);return H+':'+pad(M)}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+let WEEKS=[];
+function buildWeeks(){
+  const m={};BASE_WEEKS.forEach(w=>m[w.mon]=Object.assign({},w));
+  Object.values(STATE.pdfWeeks||{}).forEach(p=>{m[p.mon]={n:p.n||(m[p.mon]&&m[p.mon].n)||'',mon:p.mon,note:p.lessons.length?'':'Nel PDF non risultano tue ore in questa settimana.',src:p.file}});
+  WEEKS=Object.values(m).sort((a,b)=>a.mon<b.mon?-1:1);
+}
+function mondayOf(date){const d=parseD(date);d.setDate(d.getDate()-((d.getDay()+6)%7));return iso(d)}
+function weekOf(date){const mo=mondayOf(date);return WEEKS.some(w=>w.mon===mo)?mo:null}
+const now=()=>new Date();
+
+/* Lezioni effettive = PDF + modifiche + aggiunte */
+let ALL=[];
+function rebuild(){
+  buildWeeks();
+  const pw=STATE.pdfWeeks||{};
+  const src=LESSONS.filter(l=>!pw[mondayOf(l.date)]).concat(...Object.values(pw).map(p=>p.lessons));
+  const base=src.map(l=>{
+    const id=l.date+'_'+l.start+'_'+l.cls;
+    const o=STATE.overrides[id];
+    const r=Object.assign({},l,{id,orig:l,edited:!!o},o||{});
+    return r;
+  });
+  const add=STATE.added.map(a=>Object.assign({},a,{added:true,edited:true}));
+  ALL=base.concat(add).map(l=>Object.assign(l,{h:Math.max(0,l.end-l.start),week:weekOf(l.date)}))
+    .sort((a,b)=>a.date<b.date?-1:a.date>b.date?1:a.start-b.start);
+}
+rebuild();
+
+function status(l){
+  if(STATE.off[l.id]) return 'off';
+  const n=now(), t=iso(n);
+  if(l.date<t) return 'done';
+  if(l.date>t) return 'plan';
+  const hr=n.getHours()+n.getMinutes()/60;
+  if(hr>=l.end) return 'done';
+  if(hr>=l.start) return 'now';
+  return 'today';
+}
+const counted=l=>!STATE.off[l.id];
+const sum=a=>a.reduce((s,l)=>s+l.h,0);
+const BADGE={done:['b-done','Svolta'],plan:['b-plan','In programma'],off:['b-off','Annullata'],now:['b-today','In corso'],today:['b-today','Oggi']};
+function badge(l){const[c,t]=BADGE[status(l)];return `<button class="st-btn" data-toggle="${l.id}" title="Tocca per segnare come annullata / ripristinare"><span class="badge ${c}">${t}</span></button>`}
+function roomHTML(r){return r?`Aula <b>${esc(r)}</b>`:`<span class="na">Aula non indicata</span>`}
+function hrs(n){n=Math.round(n*100)/100;return n+(n===1?' ora':' ore')}
+const modTag=l=>l.edited?`<span class="tag-mod">${l.added?'Aggiunta':'Modificata'}</span>`:'';
+
+let editing=null; // id in modifica, oppure 'new'
+let editErr='';
+function lessonRow(l,opts={}){
+  if(editing===l.id) return editorHTML(l);
+  return `<div class="lesson ${status(l)==='off'?'off':''} ${opts.first?'first':''}">
+    <div class="time">${fmtT(l.start)}<span>→ ${fmtT(l.end)}</span></div>
+    <div><div class="cls">Classe ${esc(l.cls)}${modTag(l)}</div><div class="room">${roomHTML(l.room)} · ${hrs(l.h)}</div>${l.note?`<div class="lnote">${esc(l.note)}</div>`:''}</div>
+    <div class="right">${badge(l)}${opts.edit?`<button class="edit-btn" data-edit="${l.id}">✎ Modifica</button>`:''}</div></div>`;
+}
+function hourOpts(sel){let o='';for(let h=7;h<=19;h+=0.5){o+=`<option value="${h}" ${Math.abs(h-sel)<0.01?'selected':''}>${fmtT(h)}</option>`}return o}
+function editorHTML(l){
+  const isNew=!l;
+  l=l||{id:'new',date:iso(now()),start:9,end:11,cls:'',room:'',note:''};
+  return `<div class="editor" data-editor="${l.id}">
+    <div class="grid">
+      <label class="full">Data<input type="date" class="e_date" value="${l.date}"></label>
+      <label>Inizio<select class="e_start">${hourOpts(l.start)}</select></label>
+      <label>Fine<select class="e_end">${hourOpts(l.end)}</select></label>
+      <label>Classe<input class="e_cls" value="${esc(l.cls)}" placeholder="es. 1A"></label>
+      <label>Aula<input class="e_room" value="${esc(l.room||'')}" placeholder="es. LB"></label>
+      <label class="full">Nota<input class="e_note" value="${esc(l.note||'')}" placeholder="es. sostituzione, cambio aula…"></label>
+    </div>
+    ${editErr?`<div class="err">${editErr}</div>`:''}
+    <div class="acts">
+      <button class="btn-save" data-save="${l.id}">Salva</button>
+      <button class="btn-cancel" data-cancel>Annulla</button>
+      ${!isNew&&l.edited&&!l.added?`<button class="btn-reset" data-reset="${l.id}">Ripristina orario PDF</button>`:''}
+      ${!isNew&&l.added?`<button class="btn-del" data-del="${l.id}">Elimina lezione</button>`:''}
+    </div></div>`;
+}
+
+/* ===== VIEWS ===== */
+function vOggi(){
+  const t=iso(now());
+  const todayAll=ALL.filter(l=>l.date===t);
+  /* dalle 15:00 le lezioni di oggi già svolte non vengono più mostrate */
+  const after15=now().getHours()>=15;
+  const todayL=after15?todayAll.filter(l=>status(l)!=='done'):todayAll;
+  const next=ALL.find(l=>{const s=status(l);return s==='plan'||s==='today'||s==='now'});
+  const wk=weekOf(t);
+  const wkL=ALL.filter(l=>l.date>=addDays(t,-(parseD(t).getDay()+6)%7)&&l.date<=addDays(t,6-(parseD(t).getDay()+6)%7)&&counted(l));
+  const extra=+STATE.extraHours||0;
+  const done=sum(ALL.filter(l=>status(l)==='done'))+extra;
+  const tot=sum(ALL.filter(counted))+extra;
+  let h='';
+  if(next){
+    const s=status(next);
+    const lbl=s==='now'?'Lezione in corso':'Prossima lezione';
+    const when=next.date===t?`Oggi, ${fmtT(next.start)} – ${fmtT(next.end)}`:fmtLong(next.date);
+    h+=`<div class="hero"><div class="lbl"><span>${lbl}</span><button class="edit-btn" data-edit="${next.id}">✎ Modifica</button></div><div class="when">${when}</div>
+      <div class="what">${next.date===t?'':fmtT(next.start)+' – '+fmtT(next.end)+' · '}Classe ${esc(next.cls)}</div>
+      ${next.note?`<div class="what" style="font-style:italic;margin-top:4px">${esc(next.note)}</div>`:''}
+      <div class="pills"><span class="pill">${next.room?'Aula '+esc(next.room):'Aula non indicata'}</span><span class="pill">${hrs(next.h)}</span>${next.edited?`<span class="pill">${next.added?'Aggiunta':'Modificata'}</span>`:''}</div></div>`;
+  }else{
+    h+=`<div class="hero"><div class="lbl">Prossima lezione</div><div class="when">Nessuna in calendario</div><div class="what">Carica i nuovi orari di gennaio per aggiornare l'app.</div></div>`;
+  }
+  h+=`<div class="stats">
+    <div class="stat"><div class="n">${sum(wkL)}</div><div class="t">ore questa settimana</div></div>
+    <div class="stat"><div class="n">${done}</div><div class="t">ore svolte finora</div></div>
+    <div class="stat"><div class="n">${tot}</div><div class="t">ore nel quadrimestre</div></div></div>`;
+  h+=mailCard();
+  h+=`<h2><span>Oggi · ${fmtLong(t)}</span><button class="add-btn" data-add>+ Aggiungi</button></h2>`;
+  if(editing==='new') h+=editorHTML(null);
+  h+= todayL.length?`<div class="card">${todayL.map((l,i)=>lessonRow(l,{edit:true,first:i===0})).join('')}</div>`:(after15&&todayAll.length?`<div class="card" style="color:var(--muted)">Giornata conclusa.</div>`:`<div class="card" style="color:var(--muted)">Oggi non hai lezioni al CIOFS. Se ti hanno chiamata all'ultimo, usa “+ Aggiungi”.</div>`);
+  const upcoming=ALL.filter(l=>l.date>t).slice(0,6);
+  if(upcoming.length){
+    h+=`<h2>In arrivo</h2><div class="card">${upcoming.map((l,i)=>lessonRow(l,{edit:true,first:i===0})).join('')}</div>`;
+  }
+  h+=`<p class="hint" style="margin-top:12px">Tocca “✎ Modifica” per cambiare orario, classe, aula o data di una lezione. Le modifiche aggiornano anche Settimana, Elenco e Riepilogo.</p>`;
+  return h;
+}
+
+let weekIdx=null;
+function vSettimana(){
+  const t=iso(now());
+  if(weekIdx===null){
+    weekIdx=WEEKS.findIndex(w=>t>=w.mon&&t<=addDays(w.mon,6));
+    if(weekIdx<0) weekIdx=t<WEEKS[0].mon?0:WEEKS.length-1;
+  }
+  const w=WEEKS[weekIdx];
+  const L=ALL.filter(l=>l.week===w.mon);
+  let h=`<div class="weeknav"><button id="wPrev" ${weekIdx===0?'disabled':''} aria-label="Settimana precedente">‹</button>
+    <div class="mid"><div class="r">${fmtShort(w.mon)} – ${fmtShort(addDays(w.mon,4))}</div><div class="s">${hrs(sum(L.filter(counted)))}${w.n?' · PDF n. '+esc(w.n):''}</div></div>
+    <button id="wNext" ${weekIdx===WEEKS.length-1?'disabled':''} aria-label="Settimana successiva">›</button></div>`;
+  if(w.note) h+=`<div class="note">${w.note}</div>`;
+  for(let d=0;d<5;d++){
+    const ds=addDays(w.mon,d), dl=L.filter(l=>l.date===ds);
+    h+=`<div class="day ${dl.length?'':'empty'} ${ds===t?'istoday':''}"><div class="day-h"><span class="d">${DAYN[d+1]} ${fmtShort(ds)}</span><span class="h">${dl.length?hrs(sum(dl.filter(counted))):''}</span></div>
+      <div class="card">${dl.length?dl.map(l=>lessonRow(l)).join(''):'Nessuna lezione'}</div></div>`;
+  }
+  return h;
+}
+
+let calFilter='tutte';
+function vCalendario(){
+  const classes=[...new Set(ALL.map(l=>l.cls))].sort();
+  let h=`<p class="hint">Tutte le lezioni del quadrimestre. Filtra per classe; tocca lo stato di una lezione per segnarla come annullata.</p>
+  <div class="filters">${['tutte',...classes].map(c=>`<button class="chip ${calFilter===c?'on':''}" data-cf="${esc(c)}">${c==='tutte'?'Tutte':esc(c)}</button>`).join('')}</div>`;
+  const L=ALL.filter(l=>calFilter==='tutte'||l.cls===calFilter);
+  if(calFilter!=='tutte'){
+    const rooms=[...new Set(L.map(l=>l.room).filter(Boolean))].sort();
+    h+=`<div class="card" style="margin-bottom:6px"><b>Classe ${esc(calFilter)}</b> · ${hrs(sum(L.filter(counted)))} totali · ${sum(L.filter(l=>status(l)==='done'))} svolte<div class="room">Aule: ${rooms.map(esc).join(', ')||'—'}</div></div>`;
+  }
+  const byM={};L.forEach(l=>{(byM[l.date.slice(0,7)]=byM[l.date.slice(0,7)]||[]).push(l)});
+  Object.keys(byM).sort().forEach(m=>{
+    const [y,mm]=m.split('-').map(Number);
+    h+=`<div class="month-h">${MONN[mm-1][0].toUpperCase()+MONN[mm-1].slice(1)} ${y}<span>${hrs(sum(byM[m].filter(counted)))}</span></div><div class="card">`;
+    h+=byM[m].map(l=>`<div class="row-l ${status(l)==='off'?'off':''}"><div class="dt">${DAYN[parseD(l.date).getDay()].slice(0,3)} ${fmtShort(l.date)}<span>${fmtT(l.start)}–${fmtT(l.end)}</span></div><div><b>Classe ${esc(l.cls)}</b>${modTag(l)}<div class="room">${roomHTML(l.room)} · ${hrs(l.h)}</div></div><div>${badge(l)}</div></div>`).join('');
+    h+=`</div>`;
+  });
+  if(!L.length) h+=`<div class="card">Nessuna lezione.</div>`;
+  return h;
+}
+
+function mlabel(m){return MONN[+m.slice(5)-1].slice(0,3)+' '+m.slice(0,4)}
+function vRiepilogo(){
+  const classes=[...new Set(ALL.map(l=>l.cls))].sort();
+  const months=[...new Set(ALL.map(l=>l.date.slice(0,7)))].sort();
+  const extra=+STATE.extraHours||0;
+  const base=sum(ALL.filter(counted)), done=sum(ALL.filter(l=>status(l)==='done'));
+  const off=sum(ALL.filter(l=>STATE.off[l.id]));
+  const tot=base+extra, doneT=done+extra, plan=base-done;
+  let h=`<div class="card"><div class="total"><div><div class="sub">Totale ore${months.length?' ('+mlabel(months[0])+' – '+mlabel(months[months.length-1])+')':''}</div><div class="big">${tot}</div></div>
+    <div style="text-align:right"><div class="sub"><b style="color:var(--accent-ink)">${doneT}</b> svolte</div><div class="sub"><b style="color:var(--comp)">${plan}</b> in programma</div>${off?`<div class="sub">${off} annullate (escluse)</div>`:''}</div></div>
+    <div class="bar"><i style="width:${tot?doneT/tot*100:0}%;background:var(--accent)"></i><i style="width:${tot?plan/tot*100:0}%;background:var(--comp-light)"></i></div>
+    <div class="legend"><span><b style="background:var(--accent)"></b>Svolte</span><span><b style="background:var(--comp-light)"></b>In programma</span></div></div>`;
+  if(extra) h+=`<div class="card extra" style="margin-top:10px"><div class="total"><div><b>Ore aggiuntive</b><div class="sub">Classi e mese da definire${STATE.extraNote?' · '+esc(STATE.extraNote):''}</div></div><div class="big" style="font-size:30px">${extra}</div></div></div>`;
+  h+=`<h2>Ore per mese</h2>`;
+  months.forEach(m=>{
+    const [y,mm]=m.split('-').map(Number);
+    const L=ALL.filter(l=>l.date.startsWith(m));
+    const t=sum(L.filter(counted)), d=sum(L.filter(l=>status(l)==='done'));
+    const per=classes.map(c=>[c,sum(L.filter(l=>l.cls===c&&counted(l)))]).filter(x=>x[1]);
+    h+=`<div class="card mcard"><div class="mh"><span class="m">${MONN[mm-1][0].toUpperCase()+MONN[mm-1].slice(1)} ${y}</span><span class="v">${hrs(t)}</span></div>
+      <div class="bar"><i style="width:${t?d/t*100:0}%;background:var(--accent)"></i><i style="width:${t?(t-d)/t*100:0}%;background:var(--comp-light)"></i></div>
+      <div class="legend"><span>${d} svolte · ${t-d} in programma</span></div>
+      <div class="split">${per.map(([c,n])=>`<span>${esc(c)}: ${n}h</span>`).join('')}</div></div>`;
+  });
+  h+=`<h2>Dettaglio per classe e mese</h2><div class="card" style="overflow-x:auto"><table><thead><tr><th>Classe</th>${months.map(m=>`<th class="num">${MONN[+m.slice(5)-1].slice(0,3)}</th>`).join('')}<th class="num">Totale</th></tr></thead><tbody>`;
+  classes.forEach(c=>{
+    h+=`<tr><td><b>${esc(c)}</b></td>${months.map(m=>`<td class="num">${sum(ALL.filter(l=>l.cls===c&&l.date.startsWith(m)&&counted(l)))||'–'}</td>`).join('')}<td class="num"><b>${sum(ALL.filter(l=>l.cls===c&&counted(l)))}</b></td></tr>`;
+  });
+  if(extra) h+=`<tr><td><b>Aggiuntive</b> <span style="color:var(--muted);font-size:12px">da definire</span></td>${months.map(()=>`<td class="num">–</td>`).join('')}<td class="num"><b>${extra}</b></td></tr>`;
+  h+=`<tr class="tot"><td>Totale</td>${months.map(m=>`<td class="num">${sum(ALL.filter(l=>l.date.startsWith(m)&&counted(l)))}</td>`).join('')}<td class="num">${tot}</td></tr></tbody></table></div>`;
+  h+=`<h2>Ore per settimana</h2><div class="card"><table><thead><tr><th>Settimana</th><th class="num">Ore</th></tr></thead><tbody>${WEEKS.map(w=>`<tr><td>${fmtShort(w.mon)} – ${fmtShort(addDays(w.mon,4))} ${w.n?`<span style="color:var(--muted);font-size:12px">· PDF ${esc(w.n)}</span>`:''}</td><td class="num">${sum(ALL.filter(l=>l.week===w.mon&&counted(l)))}</td></tr>`).join('')}</tbody></table></div>`;
+  h+=`<p style="margin-top:14px"><button class="edit-btn" data-logout>Esci da questo dispositivo</button></p><p class="foot">Le ore delle lezioni sono calcolate dalle celle "SANNA" dei PDF orari settimanali (caricati a inizio anno e aggiornati con “Controlla mail”), più le modifiche fatte nella pagina Oggi. Le 30 ore aggiuntive sono incluse nei totali e nelle ore svolte, ma non nei mesi finché non indichi classi e periodo. Una lezione è "svolta" quando la sua ora di fine è passata; le lezioni annullate sono escluse.</p>`;
+  return h;
+}
+
+/* ===== CONTROLLA MAIL ===== */
+const MAIL_FROM='lorenzo.beria@ciofsfp.org';
+const PDFJS='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/';
+let MAIL={busy:false,msg:'',err:false,report:null,step:''};
+function fmtDT(ms){const d=new Date(ms);return d.getDate()+' '+MONN[d.getMonth()]+' '+d.getFullYear()+', '+d.getHours()+':'+pad(d.getMinutes())}
+function mailCardBase(){
+  let h=`<div class="card mailcard" style="margin-top:14px"><div class="mc-h"><div><b>Aggiornamenti orario</b></div>
+    <button class="add-btn" data-mail ${MAIL.busy?'disabled':''}>${MAIL.busy?'Controllo…':'Controlla mail'}</button></div>`;
+  if(STATE.lastUpdate) h+=`<div class="room" style="margin-top:8px">Ultimo aggiornamento applicato: <b>${fmtDT(STATE.lastUpdate.at)}</b> · ${esc(STATE.lastUpdate.text)}</div>`;
+  const pend=calPlan();
+  if(pend.length&&!MAIL.busy) h+=`<div class="room" style="margin-top:8px">📅 Calendario da allineare: ${calPlanText(pend)}. <button class="edit-btn" data-calsync>Sincronizza calendario</button></div>`;
+  if(MAIL.busy&&MAIL.step) h+=`<div class="room" style="margin-top:8px">${esc(MAIL.step)}</div>`;
+  if(MAIL.msg) h+=`<div class="${MAIL.err?'err':'room'}" style="margin-top:8px">${MAIL.msg}</div>`;
+  if(MAIL.report) h+=reportHTML(MAIL.report);
+  return h+`</div>`;
+}
+function sig(l){return l.date+'|'+l.start+'|'+l.end+'|'+l.cls+'|'+(l.room||'')}
+function lDesc(l){return `${DAYN[parseD(l.date).getDay()].slice(0,3)} ${fmtShort(l.date)} · ${fmtT(l.start)}–${fmtT(l.end)} · ${esc(l.cls)} · ${l.room?'aula '+esc(l.room):'aula non indicata'}`}
+function reportHTML(rep){
+  let h=`<div class="report">`;
+  rep.weeks.forEach(w=>{
+    h+=`<div class="rw"><div class="rw-h">Settimana ${fmtShort(w.mon)} – ${fmtShort(addDays(w.mon,4))} <span>${w.isNew?'nuova':''}</span></div><div class="room">${esc(w.file)} · mail del ${fmtShort(w.mailDate)}</div>`;
+    w.changed.forEach(c=>{h+=`<div class="chg ch-m">✎ ${lDesc(c.from)}<br>→ ${fmtT(c.to.start)}–${fmtT(c.to.end)} · ${esc(c.to.cls)} · ${c.to.room?'aula '+esc(c.to.room):'aula non indicata'}</div>`});
+    w.added.forEach(l=>{h+=`<div class="chg ch-a">＋ ${lDesc(l)}</div>`});
+    w.removed.forEach(l=>{h+=`<div class="chg ch-r">− ${lDesc(l)}</div>`});
+    h+=`<div class="room" style="margin-top:4px">${hrs(w.oldH)} → <b>${hrs(w.newH)}</b></div></div>`;
+  });
+  if(rep.same) h+=`<div class="room">${rep.same} ${rep.same===1?'settimana invariata':'settimane invariate'}.</div>`;
+  if(rep.orphan) h+=`<div class="note" style="margin-top:8px">${rep.orphan} ${rep.orphan===1?'tua modifica manuale riguarda':'tue modifiche manuali riguardano'} lezioni che nel nuovo PDF sono cambiate: dopo l'aggiornamento vale l'orario del PDF.</div>`;
+  if(rep.weeks.some(w=>addDays(w.mon,4)>=CAL_FROM)) h+=`<div class="room" style="margin-top:8px">📅 Applicando, aggiorno anche “Calendario Fede” con eventi “SCUOLA”.</div>`;
+  h+=`<div class="acts" style="display:flex;gap:8px;margin-top:10px"><button class="btn-save" data-apply>Applica aggiornamento</button><button class="btn-cancel" data-dismiss>Annulla</button></div></div>`;
+  return h;
+}
+function loadScript(src){return new Promise((res,rej)=>{const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=()=>rej(new Error('Impossibile caricare il lettore PDF'));document.head.appendChild(s)})}
+async function pdfLib(){
+  if(!window.pdfjsLib){await loadScript(PDFJS+'pdf.worker.min.js');await loadScript(PDFJS+'pdf.min.js')}
+  try{window.pdfjsLib.GlobalWorkerOptions.workerSrc=PDFJS+'pdf.worker.min.js'}catch(e){}
+  return window.pdfjsLib;
+}
+function norm(r){
+  let p=r&&typeof r==='object'&&'payload' in r?r.payload:r;
+  if(p&&p.structuredContent) p=p.structuredContent;
+  if(p&&Array.isArray(p.content)){const t=p.content.find(c=>c.type==='text');if(t){try{p=JSON.parse(t.text)}catch(e){p=t.text}}}
+  if(typeof p==='string'){try{p=JSON.parse(p)}catch(e){}}
+  return p;
+}
+async function gmail(MCP,tool,input){return norm(await MCP.callTool('Gmail',tool,input))}
+function findRaw(o){if(!o)return null;if(typeof o.raw==='string')return o.raw;if(o.message)return findRaw(o.message);return null}
+function errText(e){
+  const c=e&&(e.code||e.name)||'', m=String(e&&e.message||e);
+  if(/not_connected|server_not_connected/i.test(c+m)) return 'Gmail o Google Calendar non risultano collegati: collegali dai connettori di Claude e riprova.';
+  if(/denied|consent|not_granted|authz|permission/i.test(c+m)) return 'Accesso a Google non autorizzato: conferma il permesso quando te lo chiede e riprova.';
+  if(/rate/i.test(c+m)) return 'Troppe richieste a Gmail in poco tempo: riprova tra qualche minuto.';
+  return 'Controllo non riuscito: '+esc(m);
+}
+async function checkMail(){
+  if(MAIL.busy) return;
+  MAIL={busy:true,msg:'',err:false,report:null,step:'Cerco le mail…'};render();
+  try{
+    const c=window.claude; const MCP=c&&c.use?await c.use('mcp'):null;
+    if(!MCP) throw {message:'Gmail non è disponibile in questa vista: apri l\'app da claude.ai con il tuo account.',plain:true};
+    const sr=await gmail(MCP,'search_threads',{query:`from:${MAIL_FROM} has:attachment newer_than:120d`,pageSize:25});
+    let msgs=[];
+    for(const th of (sr&&sr.threads)||[]){
+      let list=th.messages||[];
+      if((th.messageCount||0)>list.length){try{const full=await gmail(MCP,'get_thread',{threadId:th.id,messageFormat:'METADATA_ONLY'});list=(full&&full.messages)||list}catch(e){}}
+      list.filter(m=>String(m.sender||'').toLowerCase().includes(MAIL_FROM)).forEach(m=>msgs.push({id:m.id,date:m.date||'',ms:+m.internalDate||Date.parse(m.date)||0}));
+    }
+    const seen=new Set();msgs=msgs.filter(m=>!seen.has(m.id)&&seen.add(m.id)).sort((a,b)=>a.ms-b.ms);
+    if(!msgs.length){MAIL={busy:false,msg:'Nessuna mail con orari trovata negli ultimi 4 mesi.',report:null};render();return}
+    const lib=await pdfLib();
+    const found={};let nPdf=0;
+    for(let i=0;i<msgs.length;i++){
+      const m=msgs[i];
+      MAIL.step=`Leggo la mail ${i+1} di ${msgs.length}…`;render();
+      const full=await gmail(MCP,'get_message',{messageId:m.id,messageFormat:'RAW'});
+      const raw=findRaw(full); if(!raw) continue;
+      const atts=rawToAttachments(raw).filter(a=>/prima/i.test(a.filename)&&(/\.pdf$/i.test(a.filename)||a.mime==='application/pdf'));
+      for(const a of atts){
+        const doc=await lib.getDocument({data:a.bytes,disableFontFace:true,isEvalSupported:false}).promise;
+        const r=await ciofsExtract(await doc.getPage(1),'SANNA');
+        if(!r.range) continue;
+        const yy=r.af?(r.range.m1>=8?r.af[0]:r.af[1]):parseD(iso(now())).getFullYear();
+        const mon=mondayOf(iso(new Date(yy,r.range.m1-1,r.range.d1)));
+        const nm=/^\s*(\d+)/.exec(a.filename);
+        found[mon]={n:nm?nm[1].padStart(2,'0'):'',mon,file:a.filename,mailDate:iso(new Date(m.ms||Date.now())),
+          lessons:r.lessons.map(l=>({date:addDays(mon,l.day),start:l.start,end:l.end,cls:l.cls,room:l.room}))};
+        nPdf++;
+      }
+    }
+    if(!nPdf){MAIL={busy:false,msg:`Ho letto ${msgs.length} mail ma non ho trovato PDF con “PRIMA” nel nome.`,report:null};render();return}
+    // confronto
+    const pw=STATE.pdfWeeks||{};
+    const rep={weeks:[],same:0,orphan:0,found};
+    Object.values(found).sort((a,b)=>a.mon<b.mon?-1:1).forEach(nw=>{
+      const cur=pw[nw.mon]?pw[nw.mon].lessons:LESSONS.filter(l=>mondayOf(l.date)===nw.mon);
+      const isNew=!pw[nw.mon]&&!BASE_WEEKS.some(w=>w.mon===nw.mon);
+      const A=new Map(cur.map(l=>[sig(l),l])),B=new Map(nw.lessons.map(l=>[sig(l),l]));
+      let removed=cur.filter(l=>!B.has(sig(l))),added=nw.lessons.filter(l=>!A.has(sig(l)));
+      const changed=[];
+      removed=removed.filter(o=>{const j=added.findIndex(n=>n.date===o.date&&(n.cls===o.cls||(n.start===o.start&&n.end===o.end)));if(j>=0){changed.push({from:o,to:added[j]});added.splice(j,1);return false}return true});
+      if(!removed.length&&!added.length&&!changed.length&&!isNew){rep.same++;return}
+      const newIds=new Set(nw.lessons.map(l=>l.date+'_'+l.start+'_'+l.cls));
+      Object.keys(STATE.overrides).forEach(id=>{if(mondayOf(id.slice(0,10))===nw.mon&&!newIds.has(id))rep.orphan++});
+      rep.weeks.push(Object.assign({},nw,{isNew,removed,added,changed,oldH:cur.reduce((s,l)=>s+l.end-l.start,0),newH:nw.lessons.reduce((s,l)=>s+l.end-l.start,0)}));
+    });
+    STATE.lastCheck=Date.now();
+    if(!rep.weeks.length){MAIL={busy:false,msg:`Tutto già aggiornato: ${nPdf} PDF “PRIMA” letti da ${msgs.length} mail, nessuna differenza con i dati dell'app.`,report:null};render();return}
+    MAIL={busy:false,msg:`Ho letto ${nPdf} PDF “PRIMA” da ${msgs.length} mail. Ecco cosa cambia:`,report:rep};render();
+  }catch(e){
+    MAIL={busy:false,err:true,msg:e&&e.plain?esc(e.message):errText(e),report:null};render();
+  }
+}
+async function applyUpdate(){
+  const rep=MAIL.report; if(!rep||MAIL.busy) return;
+  STATE.pdfWeeks=STATE.pdfWeeks||{};
+  rep.weeks.forEach(w=>{STATE.pdfWeeks[w.mon]={n:w.n,mon:w.mon,file:w.file,mailDate:w.mailDate,lessons:w.lessons}});
+  const nW=rep.weeks.length;
+  STATE.lastUpdate={at:Date.now(),text:`${nW} ${nW===1?'settimana aggiornata':'settimane aggiornate'}`};
+  // rimuovi modifiche manuali rimaste senza lezione
+  rep.weeks.forEach(w=>{const ids=new Set(w.lessons.map(l=>l.date+'_'+l.start+'_'+l.cls));Object.keys(STATE.overrides).forEach(id=>{if(mondayOf(id.slice(0,10))===w.mon&&!ids.has(id))delete STATE.overrides[id]})});
+  rebuild();
+  let calMsg='';
+  if(calPlan().length){
+    MAIL={busy:true,msg:'',report:null,step:'Aggiorno il calendario…'};render();
+    try{const r=await syncCalendar(s=>{MAIL.step=s;render()});
+      calMsg=r.errors?` Calendario: ${r.errors} eventi non aggiornati, riprova con “Sincronizza calendario”.`:` Calendario aggiornato.`;
+      if(!r.errors) STATE.lastUpdate.text+=' · calendario aggiornato';
+    }catch(e){calMsg=' Calendario non aggiornato: '+(e&&e.plain?esc(e.message):errText(e))+' Riprova con “Sincronizza calendario”.'}
+  }
+  MAIL={busy:false,msg:'Aggiornamento applicato.'+calMsg,report:null};
+  persist();render();
+}
+
+/* ===== GOOGLE CALENDAR ===== */
+const CAL_ID=window.__DATA.calId;
+const CAL_FROM='2027-01-01';   // sincronizza solo da gennaio 2027
+const CAL_TITLE='SCUOLA';
+async function cal(MCP,tool,input){return norm(await MCP.callTool('Google Calendar',tool,input))}
+function calBlocks(){
+  // un evento per giorno: dalla prima ora di inizio all'ultima ora di fine
+  const b={};
+  ALL.filter(l=>l.date>=CAL_FROM&&counted(l)).forEach(l=>{
+    const x=b[l.date]; if(!x) b[l.date]={start:l.start,end:l.end}; else{x.start=Math.min(x.start,l.start);x.end=Math.max(x.end,l.end)}
+  });
+  return b;
+}
+function calPlan(){
+  const want=calBlocks(), have=STATE.calEvents||{};
+  const ops=[];
+  Object.keys(want).sort().forEach(d=>{
+    const w=want[d],h=have[d];
+    if(!h) ops.push({op:'create',date:d,start:w.start,end:w.end});
+    else if(h.start!==w.start||h.end!==w.end) ops.push({op:'update',date:d,start:w.start,end:w.end,id:h.id});
+  });
+  Object.keys(have).forEach(d=>{if(!want[d]) ops.push({op:'delete',date:d,id:have[d].id})});
+  return ops;
+}
+const tISO=(d,h)=>d+'T'+pad(Math.floor(h))+':'+pad(Math.round((h%1)*60))+':00';
+function calPlanText(ops){
+  const n=k=>ops.filter(o=>o.op===k).length;
+  const p=[];if(n('create'))p.push(n('create')+' da creare');if(n('update'))p.push(n('update')+' da spostare');if(n('delete'))p.push(n('delete')+' da cancellare');
+  return p.join(', ');
+}
+async function syncCalendar(onStep){
+  const ops=calPlan(); if(!ops.length) return {done:0,errors:0};
+  const c=window.claude; const MCP=c&&c.use?await c.use('mcp'):null;
+  if(!MCP) throw {message:'Google Calendar non è disponibile in questa vista.',plain:true};
+  STATE.calEvents=STATE.calEvents||{};
+  let done=0,errors=0;
+  for(let i=0;i<ops.length;i++){
+    const o=ops[i]; onStep&&onStep(`Calendario: ${i+1} di ${ops.length}…`);
+    try{
+      if(o.op==='delete'){
+        try{await cal(MCP,'delete_event',{calendarId:CAL_ID,eventId:o.id,notificationLevel:'NONE'})}catch(e){}
+        delete STATE.calEvents[o.date];
+      }else{
+        let id=o.id;
+        if(o.op==='update'){
+          try{await cal(MCP,'update_event',{calendarId:CAL_ID,eventId:id,startTime:tISO(o.date,o.start),endTime:tISO(o.date,o.end),timeZone:'Europe/Rome',notificationLevel:'NONE'})}
+          catch(e){id=null}
+        }
+        if(!id){
+          // evita doppioni: se quel giorno c'è già un evento SCUOLA, lo riusa
+          let ex=null;
+          try{const r=await cal(MCP,'list_events',{calendarId:CAL_ID,startTime:o.date+'T00:00:00',endTime:addDays(o.date,1)+'T00:00:00',fullText:CAL_TITLE,timeZone:'Europe/Rome'});
+            ex=((r&&r.events)||[]).find(e=>String(e.summary||'').trim().toUpperCase()===CAL_TITLE)}catch(e){}
+          if(ex){id=ex.id;await cal(MCP,'update_event',{calendarId:CAL_ID,eventId:id,startTime:tISO(o.date,o.start),endTime:tISO(o.date,o.end),timeZone:'Europe/Rome',notificationLevel:'NONE'})}
+          else{const r=await cal(MCP,'create_event',{calendarId:CAL_ID,summary:CAL_TITLE,startTime:tISO(o.date,o.start),endTime:tISO(o.date,o.end),timeZone:'Europe/Rome',notificationLevel:'NONE'});id=r&&(r.id||(r.event&&r.event.id))}
+        }
+        if(id) STATE.calEvents[o.date]={id,start:o.start,end:o.end}; else errors++;
+      }
+      done++;
+    }catch(e){errors++}
+  }
+  return {done,errors};
+}
+
+/* ===== VERSIONE AUTONOMA: collegamento diretto a Google (Gmail + Calendar) ===== */
+const G_SCOPES='https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/calendar.events';
+let G_TOKEN=null,G_EXP=0,G_CLIENT=null,G_PENDING=null;
+function gReady(){return !!(window.google&&google.accounts&&google.accounts.oauth2)}
+function gClient(){
+  if(G_CLIENT||!STATE.googleClientId||!gReady()) return G_CLIENT;
+  G_CLIENT=google.accounts.oauth2.initTokenClient({client_id:STATE.googleClientId,scope:G_SCOPES,
+    callback:(r)=>{ if(r&&r.access_token){G_TOKEN=r.access_token;G_EXP=Date.now()+((+r.expires_in||3500)-60)*1000;const f=G_PENDING;G_PENDING=null;f&&f()}
+      else{MAIL={busy:false,err:true,msg:'Accesso a Google non riuscito.',report:null};render()} },
+    error_callback:(e)=>{G_PENDING=null;MAIL={busy:false,err:true,msg:'Accesso a Google annullato o bloccato'+(e&&e.type?' ('+esc(e.type)+')':'')+'.',report:null};render()}});
+  return G_CLIENT;
+}
+/* esegue fn con un token valido; se serve, chiede l'accesso (va chiamata da un tocco) */
+function withGoogle(fn){
+  if(!STATE.googleClientId){MAIL={busy:false,err:true,msg:'Inserisci prima il Client ID di Google qui sotto.',report:null};render();return}
+  if(G_TOKEN&&Date.now()<G_EXP){fn();return}
+  const c=gClient(); if(!c){MAIL={busy:false,err:true,msg:'Il servizio di accesso Google non si è caricato: controlla la connessione e riprova.',report:null};render();return}
+  G_PENDING=fn; c.requestAccessToken({prompt:G_TOKEN?'':'consent'});
+}
+async function gFetch(url,opt={}){
+  const r=await fetch(url,Object.assign({},opt,{headers:Object.assign({'Authorization':'Bearer '+G_TOKEN,'Content-Type':'application/json'},opt.headers||{})}));
+  if(r.status===204) return {};
+  const j=await r.json().catch(()=>({}));
+  if(!r.ok){const e=new Error((j.error&&j.error.message)||('HTTP '+r.status));e.code=r.status===401?'authz':r.status===403?'permission':r.status===429?'rate':'http';e.status=r.status;throw e}
+  return j;
+}
+const GM='https://gmail.googleapis.com/gmail/v1/users/me/', GC='https://www.googleapis.com/calendar/v3/calendars/';
+function dayISO(d){return new Date(...d.split('-').map((x,i)=>i===1?x-1:+x)).toISOString()}
+/* adattatore con la stessa interfaccia usata nella versione Claude */
+const GAPI={callTool:async(server,tool,input)=>{
+  if(server==='Gmail'){
+    if(tool==='search_threads'){
+      const j=await gFetch(GM+'messages?maxResults='+(input.pageSize||25)+'&q='+encodeURIComponent(input.query));
+      const out=[];
+      for(const m of j.messages||[]){const meta=await gFetch(GM+'messages/'+m.id+'?format=minimal');out.push({id:m.threadId,messageCount:1,messages:[{id:m.id,sender:MAIL_FROM,internalDate:meta.internalDate}]})}
+      return {payload:{threads:out}};
+    }
+    if(tool==='get_message') return {payload:await gFetch(GM+'messages/'+input.messageId+'?format=raw')};
+    if(tool==='get_thread') return {payload:{messages:[]}};
+  }
+  if(server==='Google Calendar'){
+    const base=GC+encodeURIComponent(input.calendarId)+'/events';
+    const dt=s=>({dateTime:s,timeZone:input.timeZone||'Europe/Rome'});
+    if(tool==='list_events'){const j=await gFetch(base+'?singleEvents=true&timeMin='+encodeURIComponent(dayISO(input.startTime.slice(0,10)))+'&timeMax='+encodeURIComponent(dayISO(input.endTime.slice(0,10)))+(input.fullText?'&q='+encodeURIComponent(input.fullText):''));return {payload:{events:j.items||[]}}}
+    if(tool==='create_event') return {payload:await gFetch(base+'?sendUpdates=none',{method:'POST',body:JSON.stringify({summary:input.summary,start:dt(input.startTime),end:dt(input.endTime)})})};
+    if(tool==='update_event') return {payload:await gFetch(base+'/'+encodeURIComponent(input.eventId)+'?sendUpdates=none',{method:'PATCH',body:JSON.stringify({start:dt(input.startTime),end:dt(input.endTime)})})};
+    if(tool==='delete_event') return {payload:await gFetch(base+'/'+encodeURIComponent(input.eventId)+'?sendUpdates=none',{method:'DELETE'})};
+  }
+  throw new Error('operazione non supportata: '+tool);
+}};
+window.claude={use:async n=>n==='mcp'?GAPI:null};
+function mailCard(){
+  let h=mailCardBase();
+  if(!STATE.googleClientId||G_SHOWCFG){
+    h+=`<div class="card" style="margin-top:10px"><b>Collega Google</b><div class="room" style="margin:4px 0 8px">Incolla il Client ID creato su Google Cloud (finisce con .apps.googleusercontent.com).</div>
+      <div class="editor" style="margin:0"><label class="full">Client ID<input id="gcid" value="${esc(STATE.googleClientId||'')}" placeholder="123…-abc.apps.googleusercontent.com"></label>
+      <div class="acts"><button class="btn-save" data-gsave>Salva</button>${STATE.googleClientId?'<button class="btn-cancel" data-gcancel>Annulla</button>':''}</div></div></div>`;
+  }else h+=`<div class="room" style="margin-top:6px;text-align:right"><button class="st-btn" data-gcfg style="color:var(--muted);font-size:12px;text-decoration:underline">Impostazioni Google</button></div>`;
+  return h;
+}
+let G_SHOWCFG=false;
+document.addEventListener('click',e=>{
+  const q=s=>e.target.closest(s);
+  if(q('[data-gsave]')){const v=(document.getElementById('gcid').value||'').trim();STATE.googleClientId=v;G_CLIENT=null;G_TOKEN=null;G_SHOWCFG=false;persist();render();e.stopImmediatePropagation();return}
+  if(q('[data-gcancel]')){G_SHOWCFG=false;render();e.stopImmediatePropagation();return}
+  if(q('[data-gcfg]')){G_SHOWCFG=true;render();e.stopImmediatePropagation();return}
+  if(q('[data-mail]')){e.stopImmediatePropagation();if(MAIL.busy)return;withGoogle(()=>checkMail());return}
+  if(q('[data-apply]')){e.stopImmediatePropagation();if(calPlan().length||MAIL.report&&MAIL.report.weeks.some(w=>addDays(w.mon,4)>=CAL_FROM))withGoogle(()=>applyUpdate());else applyUpdate();return}
+  if(q('[data-calsync]')){e.stopImmediatePropagation();withGoogle(()=>{MAIL={busy:true,msg:'',report:null,step:'Aggiorno il calendario…'};render();
+    syncCalendar(s=>{MAIL.step=s;render()}).then(r=>{MAIL={busy:false,msg:r.errors?`${r.errors} eventi non aggiornati: riprova.`:'Calendario aggiornato.',err:!!r.errors,report:null}})
+    .catch(err=>{MAIL={busy:false,err:true,msg:errText(err),report:null}}).finally(()=>{persist();render()})});return}
+},true);
+
+/* ===== SALVATAGGIO ===== */
+let artifactApi=null, saveTimer=null;
+function setSync(t){const el=document.getElementById('sync');if(el)el.textContent=t}
+function buildDoc(){
+  const d=SRC_DOC.cloneNode(true);
+  // tieni solo gli elementi propri della pagina
+  ['head','body'].forEach(tag=>{const p=d.querySelector(tag);if(!p)return;[...p.children].forEach(ch=>{if(!ch.hasAttribute('data-k'))ch.remove()})});
+  d.querySelector('#state').textContent=JSON.stringify(STATE).replace(/</g,'\\u003c');
+  return '<!DOCTYPE html>\n'+d.outerHTML;
+}
+function persist(){
+  STATE.savedAt=Date.now();
+  try{localStorage.setItem('ciofs_state_v2',JSON.stringify(STATE))}catch(e){}
+  if(!artifactApi){setSync(LOCAL_ONLY?'Modifiche salvate solo su questo dispositivo':'Salvato');return}
+  setSync('Salvataggio…');
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(async()=>{
+    try{await artifactApi.publish(buildDoc());setSync('Salvato')}
+    catch(e){const m=String(e&&e.message||e);setSync(/conflict/i.test(m)?'Aggiornato da un altro dispositivo':'Salvato solo su questo dispositivo');}
+  },1200);
+}
+(async()=>{
+  try{
+    const c=window.claude; if(!c||!c.use){LOCAL_ONLY=true;return}
+    artifactApi=await c.use('artifact');
+    if(!artifactApi) LOCAL_ONLY=true;
+  }catch(e){LOCAL_ONLY=true}
+})();
+
+/* ===== RENDER & EVENTI ===== */
+const VIEWS={oggi:vOggi,settimana:vSettimana,calendario:vCalendario,riepilogo:vRiepilogo};
+function current(){const v=(location.hash||'').slice(1);return VIEWS[v]?v:'oggi'}
+function render(){
+  const v=current();
+  document.getElementById('view').innerHTML=VIEWS[v]();
+  document.querySelectorAll('nav.tabs a').forEach(a=>a.classList.toggle('on',a.dataset.v===v));
+  const n=now();document.getElementById('todayChip').textContent=DAYN[n.getDay()]+' '+n.getDate()+' '+MONN[n.getMonth()];
+}
+function readEditor(box){
+  const g=c=>box.querySelector('.'+c);
+  const v={date:g('e_date').value,start:+g('e_start').value,end:+g('e_end').value,cls:g('e_cls').value.trim().toUpperCase(),room:g('e_room').value.trim().toUpperCase()||null,note:g('e_note').value.trim()};
+  if(!v.date) return [null,'Inserisci la data.'];
+  if(!v.cls) return [null,'Inserisci la classe.'];
+  if(v.end<=v.start) return [null,"L'ora di fine deve essere dopo l'inizio."];
+  return [v,''];
+}
+document.addEventListener('click',e=>{
+  const q=s=>e.target.closest(s);
+  let t;
+  if(t=q('[data-toggle]')){const id=t.dataset.toggle;if(STATE.off[id])delete STATE.off[id];else STATE.off[id]=1;persist();render();return}
+  if(t=q('[data-edit]')){editing=t.dataset.edit;editErr='';render();const ed=document.querySelector('.editor');if(ed)ed.scrollIntoView({behavior:'smooth',block:'center'});return}
+  if(q('[data-add]')){editing='new';editErr='';render();return}
+  if(q('[data-cancel]')){editing=null;editErr='';render();return}
+  if(t=q('[data-save]')){
+    const id=t.dataset.save;const [v,err]=readEditor(t.closest('.editor'));
+    if(err){editErr=err;render();return}
+    if(id==='new'){STATE.added.push(Object.assign({id:'add_'+Date.now()},v))}
+    else{
+      const a=STATE.added.find(x=>x.id===id);
+      if(a) Object.assign(a,v);
+      else{
+        const o=LESSONS.find(l=>l.date+'_'+l.start+'_'+l.cls===id);
+        const same=o&&o.date===v.date&&o.start===v.start&&o.end===v.end&&o.cls===v.cls&&(o.room||null)===v.room&&!v.note;
+        if(same) delete STATE.overrides[id]; else STATE.overrides[id]=v;
+      }
+    }
+    editing=null;editErr='';rebuild();persist();render();return}
+  if(t=q('[data-reset]')){delete STATE.overrides[t.dataset.reset];editing=null;rebuild();persist();render();return}
+  if(t=q('[data-del]')){STATE.added=STATE.added.filter(x=>x.id!==t.dataset.del);delete STATE.off[t.dataset.del];editing=null;rebuild();persist();render();return}
+  if(q('[data-mail]')){checkMail();return}
+  if(q('[data-apply]')){applyUpdate();return}
+  if(q('[data-calsync]')){(async()=>{MAIL={busy:true,msg:'',report:null,step:'Aggiorno il calendario…'};render();
+    try{const r=await syncCalendar(s=>{MAIL.step=s;render()});MAIL={busy:false,msg:r.errors?`${r.errors} eventi non aggiornati: riprova.`:'Calendario aggiornato.',err:!!r.errors,report:null}}
+    catch(e){MAIL={busy:false,err:true,msg:e&&e.plain?esc(e.message):errText(e),report:null}}
+    persist();render()})();return}
+  if(q('[data-dismiss]')){MAIL={busy:false,msg:'',report:null};render();return}
+  if(t=q('[data-cf]')){calFilter=t.dataset.cf;render();return}
+  if(q('#wPrev')){weekIdx--;render();return}
+  if(q('#wNext')){weekIdx++;render();return}
+});
+window.addEventListener('hashchange',()=>{editing=null;render();window.scrollTo(0,0)});
+render();
+setInterval(()=>{if(!editing&&!MAIL.busy&&!MAIL.report)render()},60000);
+</script>
+</body>
+</html>
